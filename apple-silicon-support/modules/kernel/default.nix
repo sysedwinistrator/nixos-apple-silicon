@@ -6,11 +6,17 @@
     boot.kernelPackages = let
       pkgs' = config.hardware.asahi.pkgs;
     in
-      pkgs'.linux-asahi.override {
+      (pkgs'.linux-asahi.override {
         inherit (config.boot) kernelPatches;
         _4KBuild = config.hardware.asahi.use4KPages;
         withRust = config.hardware.asahi.withRust;
-      };
+      })
+      .extend (final: prev: {
+        zfs = prev.zfs.overrideAttrs (self: {
+          meta = self.meta // {broken = false;};
+          patches = self.patches ++ [./0001-hack.patch];
+        });
+      });
 
     # we definitely want to use CONFIG_ENERGY_MODEL, and
     # schedutil is a prerequisite for using it

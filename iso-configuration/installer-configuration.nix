@@ -28,6 +28,9 @@
   swapDevices = lib.mkOverride 60 [ ];
   fileSystems = lib.mkOverride 60 config.lib.isoFileSystems;
 
+  boot.supportedFilesystems = ["zfs"];
+  networking.hostId = "7ed09718";
+
   boot.postBootCommands = let
     inherit (config.hardware.asahi.pkgs) asahi-fwextract;
   in ''
